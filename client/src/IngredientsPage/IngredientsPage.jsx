@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getIngredients } from "../api/inventory"
-import { Heading, List, Spinner } from "@chakra-ui/react"
+import { HStack, Heading, List, Spinner } from "@chakra-ui/react"
+import { AddIngredientModal } from "./AddIngredientModal"
 
 export const IngredientsPage = () => {
   const ingredientsQuery = useQuery({
@@ -13,7 +14,12 @@ export const IngredientsPage = () => {
 
   return (
     <div>
-      <Heading>Ingredients</Heading>
+      <HStack w="100%" justifyContent="space-between">
+        <Heading>
+          Ingredients
+        </Heading>
+        <AddIngredientModal />
+      </HStack>
 
       <List.Root>
         {ingredientsQuery.data.map(ingredient => (

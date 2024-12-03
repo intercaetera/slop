@@ -1,5 +1,6 @@
 import { VStack, HStack, Heading, Spacer, Link as ChakraLink, Container } from "@chakra-ui/react"
 import { Link, Outlet } from "react-router"
+import { Toaster } from "./components/ui/toaster"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Container maxWidth="xl" bg="bg.subtle" py={2} px={8} borderRadius="md">
         <Outlet />
       </Container>
+      <Toaster />
     </VStack>
   )
 }
