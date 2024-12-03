@@ -4,6 +4,8 @@ defmodule SlopWeb.IngredientController do
   alias Slop.Inventory
   alias Slop.Inventory.Ingredient
 
+  action_fallback SlopWeb.FallbackController
+
   def index(conn, _params) do
     ingredients = Inventory.list_ingredients()
     render(conn, :index, ingredients: ingredients)
