@@ -5,3 +5,5 @@ config :logger, level: :info
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
+config :slop, Slop.Endpoint,
+  static_paths: ["priv/static", "client/dist"]
