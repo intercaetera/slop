@@ -13,5 +13,8 @@ export const createIngredient = data => fetch('/api/ingredients', {
   },
   body: JSON.stringify(data)
 })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to create ingredient.')
+    return res.json()
+  })
   .then(json => json.data)

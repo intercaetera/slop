@@ -22,12 +22,28 @@ import { toaster } from '../components/ui/toaster'
 import { useRef, useState } from 'react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { createIngredient } from '../api/inventory'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
 export const AddIngredientModal = () => {
   const [open, setOpen] = useState(false)
   const contentRef = useRef(null)
 
   const qc = useQueryClient()
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      unit: '',
+    },
+    onSubmit: ingredient => {
+      submitMutation.mutate({ ingredient })
+    },
+    validationSchema: yup.object({
+      name: yup.string().required('Required'),
+      unit: yup.string().required('Required'),
+    })
+  })
 
   const submitMutation = useMutation({
     mutationFn: createIngredient,
@@ -37,21 +53,9 @@ export const AddIngredientModal = () => {
     },
     onError: error => {
       console.error(error)
-      toaster.create({ type: 'error', title: 'Something went wrong', description: error })
+      toaster.create({ type: 'error', title: 'Something went wrong', description: error.message })
     }
   })
-
-  const handleSubmit = event => {
-    event.preventDefault()
-    const formData = new FormData(event.target)
-
-    const ingredient = {
-      unit: formData.get('unit'),
-      value: formData.get('value')
-    }
-
-    submitMutation.mutate({ ingredient })
-  }
 
   return (
     <DialogRoot open={open} onOpenChange={e => setOpen(e.open)}>
@@ -61,19 +65,40 @@ export const AddIngredientModal = () => {
           + Add Ingredient
         </Button>
       </DialogTrigger>
-      <DialogContent ref={contentRef} as="form" onSubmit={handleSubmit}>
+      <DialogContent ref={contentRef} as="form" onSubmit={formik.handleSubmit}>
         <DialogCloseTrigger />
         <DialogHeader>
           <DialogTitle>Add Ingredient</DialogTitle>
         </DialogHeader>
         <DialogBody>
           <VStack gap={4}>
-            <Field label="Name" orientation="horizontal">
-              <Input name="name" />
+            <Field
+              label="Name"
+              orientation="horizontal"
+              invalid={formik.touched.name && formik.errors.name}
+              errorText={formik.errors.name}
+            >
+              <Input
+                name="name"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                onBlur={formik.handleBlur}
+              />
             </Field>
 
-            <Field label="Unit" orientation="horizontal">
-              <SelectRoot name="unit" collection={units}>
+            <Field 
+              label="Unit"
+              orientation="horizontal"
+              invalid={formik.touched.unit && formik.errors.unit}
+              errorText={formik.errors.unit}
+            >
+              <SelectRoot
+                name="unit"
+                collection={units}
+                value={formik.values.unit}
+                onValueChange={e => formik.setFieldValue('unit', e.value[0])}
+                onBlur={formik.handleBlur}
+              >
                 <SelectTrigger>
                   <SelectValueText placeholder="Select unit" />
                 </SelectTrigger>
