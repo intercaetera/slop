@@ -21,11 +21,13 @@ import {
 import { toaster } from '../components/ui/toaster'
 import { useRef, useState } from 'react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { createIngredient } from '../api/inventory'
+import { createIngredient as createIngredientEffect } from '../api/inventory'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 
-export const AddIngredientModal = () => {
+export const AddIngredientModal = ({
+  createIngredient = createIngredientEffect
+}) => {
   const [open, setOpen] = useState(false)
   const contentRef = useRef(null)
 
@@ -95,9 +97,8 @@ export const AddIngredientModal = () => {
               <SelectRoot
                 name="unit"
                 collection={units}
-                value={formik.values.unit}
+                value={[formik.values.unit]}
                 onValueChange={e => formik.setFieldValue('unit', e.value[0])}
-                onBlur={formik.handleBlur}
               >
                 <SelectTrigger>
                   <SelectValueText placeholder="Select unit" />
